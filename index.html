@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Compose Labs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* ==============================
+           RESET & BASE
+        ============================== */
+        *, *::before, *::after {
+            margin: 0; padding: 0; box-sizing: border-box;
+        }
+ 
+        :root {
+            --navy:    #08111f;
+            --deep:    #0d1e36;
+            --mid:     #1a3459;
+            --steel:   #2e5c8a;
+            --accent:  #c8a86b;
+            --accent2: #e8c97a;
+            --white:   #f0ece4;
+            --muted:   rgba(240,236,228,0.55);
+            --glass:   rgba(13,30,54,0.7);
+        }
+ 
+        html { scroll-behavior: smooth; }
+ 
+      body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    overflow-x: hidden;
+    /* cursor: none;  <-- Bu satırı SİLİN veya YORUMA ALIN */
+    cursor: auto;    /* Standart ok imlecini geri getirir */
+}
+ 
+        /* CUSTOM CURSOR */
+        .cursor {
+            width: 10px; height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+            position: fixed; z-index: 9999;
+            pointer-events: none;
+            transform: translate(-50%,-50%);
+            transition: transform 0.1s ease;
+        }
+        .cursor-ring {
+            width: 36px; height: 36px;
+            border: 1.5px solid var(--accent);
+            border-radius: 50%;
+            position: fixed; z-index: 9998;
+            pointer-events: none;
+            transform: translate(-50%,-50%);
+            transition: transform 0.12s ease, width 0.25s ease, height 0.25s ease, opacity 0.25s ease;
+            opacity: 0.6;
+        }
+        body:hover .cursor-ring { opacity: 0.6; }
+ 
+        /* ==============================
+           NAVBAR
+        ============================== */
+        .navbar {
+            position: fixed;
+            width: 100%; top: 0;
+            z-index: 1000;
+            transition: background 0.5s ease, backdrop-filter 0.5s ease;
+        }
+        .navbar.scrolled {
+            background: rgba(8,17,31,0.92);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(200,168,107,0.18);
+        }
+ 
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+            width: 90%;
+            max-width: 1280px;
+            margin: auto;
+        }
+ 
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px;
+            font-weight: 300;
+            letter-spacing: 3px;
+            color: var(--white);
+            text-transform: uppercase;
+        }
+        .logo span { color: var(--accent); }
+ 
+        .menu {
+            display: flex; gap: 36px; list-style: none;
+        }
+        .menu a {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-decoration: none;
+            position: relative;
+            transition: color 0.3s;
+        }
+        .menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0;
+            width: 0; height: 1px;
+            background: var(--accent);
+            transition: width 0.4s ease;
+        }
+        .menu a:hover { color: var(--accent); }
+        .menu a:hover::after { width: 100%; }
+ 
+        /* ==============================
+           HERO
+        ============================== */
+        .hero {
+            height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+ 
+        .hero-bg {
+            position: absolute; inset: 0;
+            background: linear-gradient(160deg, #08111f 0%, #0d2244 50%, #08111f 100%);
+            z-index: 0;
+        }
+ 
+        /* Animated grid */
+        .hero-grid {
+            position: absolute; inset: 0; z-index: 1;
+            background-image:
+                linear-gradient(rgba(200,168,107,0.07) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(200,168,107,0.07) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: gridMove 18s linear infinite;
+        }
+        @keyframes gridMove {
+            from { background-position: 0 0; }
+            to   { background-position: 60px 60px; }
+        }
+ 
+        /* Glowing orbs */
+        .orb {
+            position: absolute; border-radius: 50%;
+            filter: blur(80px);
+            animation: orbFloat 8s ease-in-out infinite alternate;
+            z-index: 1;
+        }
+        .orb1 { width: 500px; height: 500px; background: rgba(46,92,138,0.35); top: -100px; left: -100px; }
+        .orb2 { width: 400px; height: 400px; background: rgba(200,168,107,0.12); bottom: -80px; right: -80px; animation-delay: -4s; }
+        .orb3 { width: 300px; height: 300px; background: rgba(26,52,89,0.5); top: 40%; left: 55%; animation-delay: -2s; }
+ 
+        @keyframes orbFloat {
+            from { transform: translate(0,0) scale(1); }
+            to   { transform: translate(30px,20px) scale(1.08); }
+        }
+ 
+        /* Rotating 3D ring */
+        .hero-ring {
+            position: absolute; z-index: 2;
+            width: 600px; height: 600px;
+            border: 1px solid rgba(200,168,107,0.15);
+            border-radius: 50%;
+            top: 50%; left: 50%;
+            transform: translate(-50%,-50%) rotateX(70deg);
+            animation: ringRotate 20s linear infinite;
+        }
+        .hero-ring::before {
+            content: '';
+            position: absolute; inset: 30px;
+            border: 1px solid rgba(200,168,107,0.08);
+            border-radius: 50%;
+        }
+        .hero-ring::after {
+            content: '';
+            position: absolute; inset: 80px;
+            border: 1px dashed rgba(200,168,107,0.1);
+            border-radius: 50%;
+        }
+        @keyframes ringRotate {
+            from { transform: translate(-50%,-50%) rotateX(70deg) rotateZ(0deg); }
+            to   { transform: translate(-50%,-50%) rotateX(70deg) rotateZ(360deg); }
+        }
+ 
+        .hero-content {
+            position: relative; z-index: 4;
+            display: flex; flex-direction: column;
+            align-items: center;
+            animation: heroReveal 1.4s ease forwards;
+        }
+        @keyframes heroReveal {
+            from { opacity: 0; transform: translateY(40px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+ 
+        .hero-eyebrow {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 28px;
+            opacity: 0;
+            animation: heroReveal 1s 0.3s ease forwards;
+        }
+ 
+        .hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(52px, 8vw, 96px);
+            font-weight: 300;
+            font-style: italic;
+            line-height: 1.05;
+            color: var(--white);
+            margin-bottom: 24px;
+            opacity: 0;
+            animation: heroReveal 1s 0.5s ease forwards;
+        }
+        .hero h1 em {
+            font-style: normal;
+            color: var(--accent);
+        }
+ 
+        .hero-sub {
+            font-size: 15px;
+            color: var(--muted);
+            max-width: 520px;
+            line-height: 1.8;
+            margin-bottom: 48px;
+            opacity: 0;
+            animation: heroReveal 1s 0.7s ease forwards;
+        }
+ 
+        .hero-cta {
+            display: flex; gap: 16px;
+            opacity: 0;
+            animation: heroReveal 1s 0.9s ease forwards;
+        }
+ 
+        .btn-primary {
+            padding: 14px 36px;
+            background: var(--accent);
+            color: var(--navy);
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: none;
+            cursor: none;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        .btn-primary::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: var(--accent2);
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+        }
+        .btn-primary:hover::before { transform: translateX(0); }
+        .btn-primary span { position: relative; z-index: 1; }
+ 
+        .btn-outline {
+            padding: 14px 36px;
+            border: 1px solid rgba(200,168,107,0.5);
+            color: var(--accent);
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            cursor: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        .btn-outline:hover {
+            background: rgba(200,168,107,0.08);
+            border-color: var(--accent);
+        }
+ 
+        /* SCROLL INDICATOR */
+        .scroll-hint {
+            position: absolute; bottom: 36px; left: 50%;
+            transform: translateX(-50%);
+            z-index: 4;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            opacity: 0;
+            animation: heroReveal 1s 1.4s ease forwards;
+        }
+        .scroll-hint span {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px; letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .scroll-line {
+            width: 1px; height: 48px;
+            background: linear-gradient(to bottom, var(--accent), transparent);
+            animation: scrollPulse 2s ease-in-out infinite;
+        }
+        @keyframes scrollPulse {
+            0%,100% { transform: scaleY(1); opacity: 0.6; }
+            50%      { transform: scaleY(0.5); opacity: 1; }
+        }
+ 
+        /* ==============================
+           STATS / RAKAMLAR
+        ============================== */
+        .stats-band {
+            background: var(--deep);
+            border-top: 1px solid rgba(200,168,107,0.12);
+            border-bottom: 1px solid rgba(200,168,107,0.12);
+            padding: 60px 0;
+        }
+ 
+        .stats-grid {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 90%; max-width: 1280px; margin: auto;
+            gap: 32px;
+        }
+ 
+        .stat-item {
+            text-align: center;
+            position: relative;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .stat-item.visible { opacity: 1; transform: translateY(0); }
+        .stat-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: -40px; top: 10%; height: 80%;
+            width: 1px;
+            background: rgba(200,168,107,0.15);
+        }
+ 
+        .stat-num {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 64px;
+            font-weight: 300;
+            color: var(--accent);
+            line-height: 1;
+            display: block;
+        }
+        .stat-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-top: 8px;
+            display: block;
+        }
+ 
+        /* ==============================
+           SECTION SHARED
+        ============================== */
+        section { padding: 120px 0; }
+ 
+        .container {
+            width: 90%; max-width: 1280px; margin: auto;
+        }
+ 
+        .section-tag {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px; letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--accent);
+            display: block;
+            margin-bottom: 16px;
+        }
+ 
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(36px, 5vw, 60px);
+            font-weight: 300;
+            font-style: italic;
+            color: var(--white);
+            margin-bottom: 16px;
+            line-height: 1.1;
+        }
+ 
+        .section-sub {
+            font-size: 15px;
+            color: var(--muted);
+            max-width: 480px;
+            line-height: 1.8;
+        }
+ 
+        /* ==============================
+           NASIL ÇALIŞIYORUZ
+        ============================== */
+        .working {
+            background: var(--navy);
+            position: relative;
+        }
+ 
+        .working-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 80px;
+            gap: 40px;
+        }
+ 
+        .working-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            position: relative;
+        }
+ 
+        .step-line {
+            position: absolute;
+            left: 22px; top: 24px; bottom: 24px;
+            width: 1px;
+            background: linear-gradient(to bottom, var(--accent), rgba(200,168,107,0.1));
+        }
+ 
+        .step {
+            display: grid;
+            grid-template-columns: 48px 1fr;
+            gap: 32px;
+            align-items: start;
+            padding: 32px 0;
+            border-bottom: 1px solid rgba(200,168,107,0.08);
+            position: relative;
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .step.visible { opacity: 1; transform: translateX(0); }
+        .step:last-child { border-bottom: none; }
+ 
+        .step-num {
+            width: 44px; height: 44px;
+            border: 1px solid var(--accent);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            color: var(--accent);
+            background: var(--navy);
+            position: relative; z-index: 1;
+            flex-shrink: 0;
+        }
+ 
+        .step-content h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 26px;
+            font-weight: 400;
+            color: var(--white);
+            margin-bottom: 10px;
+        }
+        .step-content p {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.8;
+        }
+ 
+        .step-side-img {
+            position: sticky; top: 120px;
+            width: 100%;
+            aspect-ratio: 4/3;
+            border: 1px solid rgba(200,168,107,0.12);
+            overflow: hidden;
+            background: var(--deep);
+        }
+ 
+        .step-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: start;
+        }
+ 
+        /* 3D Preview placeholder */
+        .model-view {
+            background: var(--deep);
+            border: 1px solid rgba(200,168,107,0.15);
+            aspect-ratio: 1;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+ 
+        .model-view::before {
+            content: '';
+            position: absolute;
+            width: 200px; height: 200px;
+            border: 1px solid rgba(200,168,107,0.2);
+            border-radius: 50%;
+            animation: rotate3d 10s linear infinite;
+        }
+        .model-view::after {
+            content: '';
+            position: absolute;
+            width: 140px; height: 140px;
+            border: 1px dashed rgba(200,168,107,0.15);
+            border-radius: 50%;
+            animation: rotate3d 7s linear infinite reverse;
+        }
+        @keyframes rotate3d {
+            from { transform: rotateX(60deg) rotateZ(0deg); }
+            to   { transform: rotateX(60deg) rotateZ(360deg); }
+        }
+ 
+        .model-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            position: relative; z-index: 1;
+        }
+ 
+        /* ==============================
+           TEKNOLOJİLERİMİZ
+        ============================== */
+        .technologies {
+            background: var(--deep);
+            position: relative;
+            overflow: hidden;
+        }
+ 
+        .technologies::before {
+            content: '';
+            position: absolute;
+            top: -200px; right: -200px;
+            width: 600px; height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(46,92,138,0.2) 0%, transparent 70%);
+        }
+ 
+        .tech-header { margin-bottom: 72px; }
+ 
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+        }
+ 
+        .tech-card {
+            background: rgba(8,17,31,0.6);
+            padding: 48px 36px;
+            border: 1px solid rgba(200,168,107,0.06);
+            position: relative;
+            overflow: hidden;
+            transition: background 0.4s ease, border-color 0.4s ease;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease, background 0.4s ease;
+        }
+        .tech-card.visible { opacity: 1; transform: translateY(0); }
+        .tech-card:hover {
+            background: rgba(26,52,89,0.5);
+            border-color: rgba(200,168,107,0.2);
+        }
+ 
+        .tech-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 2px; height: 0;
+            background: var(--accent);
+            transition: height 0.5s ease;
+        }
+        .tech-card:hover::before { height: 100%; }
+ 
+        .tech-icon {
+            width: 52px; height: 52px;
+            border: 1px solid rgba(200,168,107,0.3);
+            border-radius: 4px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 24px;
+            font-size: 22px;
+        }
+ 
+        .tech-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px;
+            font-weight: 400;
+            color: var(--white);
+            margin-bottom: 12px;
+        }
+        .tech-card p {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.8;
+        }
+ 
+        /* ==============================
+           HİZMETLER
+        ============================== */
+        .services {
+            background: var(--navy);
+        }
+ 
+        .services-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 72px;
+            gap: 40px;
+        }
+ 
+        .service-list {
+            display: flex; flex-direction: column;
+            border-top: 1px solid rgba(200,168,107,0.12);
+        }
+ 
+        .service-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 36px 0;
+            border-bottom: 1px solid rgba(200,168,107,0.08);
+            cursor: none;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .service-item.visible { opacity: 1; transform: translateX(0); }
+ 
+        .service-item::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: rgba(200,168,107,0.04);
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+        .service-item:hover::before { transform: translateX(0); }
+ 
+        .service-num {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--accent);
+            letter-spacing: 2px;
+            min-width: 56px;
+        }
+ 
+        .service-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 28px;
+            font-weight: 300;
+            color: var(--white);
+            flex: 1;
+            padding: 0 32px;
+            transition: color 0.3s;
+        }
+        .service-item:hover .service-name { color: var(--accent); }
+ 
+        .service-desc {
+            font-size: 13px;
+            color: var(--muted);
+            max-width: 280px;
+            text-align: right;
+            line-height: 1.7;
+        }
+ 
+        .service-arrow {
+            width: 40px; height: 40px;
+            border: 1px solid rgba(200,168,107,0.3);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin-left: 24px;
+            color: var(--accent);
+            font-size: 16px;
+            transition: background 0.3s ease, transform 0.3s ease;
+            flex-shrink: 0;
+        }
+        .service-item:hover .service-arrow {
+            background: var(--accent);
+            color: var(--navy);
+            transform: rotate(45deg);
+        }
+ 
+        /* ==============================
+           SÜREÇ / 3D WORKFLOW
+        ============================== */
+        .process {
+            background: linear-gradient(180deg, var(--deep) 0%, var(--navy) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+ 
+        .process-title-row {
+            display: flex; justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 80px;
+        }
+ 
+        .process-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+        }
+ 
+        .process-card {
+            padding: 48px 32px;
+            border-right: 1px solid rgba(200,168,107,0.1);
+            position: relative;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .process-card.visible { opacity: 1; transform: translateY(0); }
+        .process-card:last-child { border-right: none; }
+ 
+        .process-card::before {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.6s ease;
+        }
+        .process-card:hover::before { transform: scaleX(1); }
+ 
+        .process-step-num {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 80px;
+            font-weight: 300;
+            color: rgba(200,168,107,0.1);
+            line-height: 1;
+            margin-bottom: 20px;
+            display: block;
+        }
+ 
+        .process-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 20px; font-weight: 400;
+            color: var(--white);
+            margin-bottom: 12px;
+        }
+        .process-card p {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.8;
+        }
+ 
+        /* ==============================
+           İLETİŞİM / FOOTER
+        ============================== */
+        .contact {
+            background: var(--navy);
+            border-top: 1px solid rgba(200,168,107,0.12);
+        }
+ 
+        .contact-inner {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+ 
+        .contact-cta {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(32px, 4vw, 54px);
+            font-weight: 300;
+            font-style: italic;
+            color: var(--white);
+            line-height: 1.15;
+        }
+        .contact-cta em { color: var(--accent); font-style: normal; }
+ 
+        .contact-form { display: flex; flex-direction: column; gap: 16px; }
+ 
+        .form-field {
+            display: flex; flex-direction: column; gap: 6px;
+        }
+        .form-field label {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+        .form-field input,
+        .form-field textarea {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(200,168,107,0.15);
+            color: var(--white);
+            padding: 14px 18px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+            resize: none;
+        }
+        .form-field input:focus,
+        .form-field textarea:focus {
+            border-color: var(--accent);
+        }
+        .form-field textarea { height: 100px; }
+ 
+        .footer-bottom {
+            border-top: 1px solid rgba(200,168,107,0.08);
+            padding: 32px 0;
+            margin-top: 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 18px;
+            font-weight: 300;
+            letter-spacing: 3px;
+            color: var(--muted);
+        }
+        .footer-copy {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: rgba(200,168,107,0.4);
+        }
+@media (max-width: 900px) {
+    /* 1. İmleci Mobilde Gizle */
+    .cursor, .cursor-ring { display: none !important; }
+    body { 
+        cursor: auto !important; 
+        overflow-x: hidden; /* Sayfanın yana kaymasını kesin olarak engeller */
+    }
+
+    /* 2. NAVBAR & LOGO (Taşmayı önleyen kritik kısım) */
+    .navbar {
+        padding: 10px 0;
+    }
+    .nav-content {
+        flex-direction: column; /* Logo ve Menüyü alt alta al */
+        height: auto; 
+        gap: 15px;
+        padding: 10px 0;
+    }
+    .logo {
+        font-size: 18px;
+        letter-spacing: 2px;
+        text-align: center;
+    }
+    .menu {
+        display: flex;
+        flex-wrap: wrap; /* Sığmayan elemanları alt satıra at */
+        justify-content: center; /* Menüyü ortala */
+        gap: 12px 18px; 
+        width: 100%;
+        padding: 0 10px;
+    }
+    .menu a {
+        font-size: 10px;
+        letter-spacing: 1px;
+        white-space: nowrap; /* Yazıların bölünmesini engelle */
+    }
+
+    /* 3. HERO BÖLÜMÜ */
+    .hero {
+        height: auto;
+        padding: 120px 0 60px 0;
+    }
+    .hero-content {
+        width: 100%;
+        padding: 0 20px; /* Kenarlardan boşluk verip taşmayı önler */
+        box-sizing: border-box;
+    }
+    .hero h1 { font-size: 38px; line-height: 1.2; }
+    .hero-ring { width: 280px; height: 280px; }
+    .hero-cta { flex-direction: column; width: 100%; gap: 15px; }
+    .btn-primary, .btn-outline { width: 100%; text-align: center; padding: 16px; box-sizing: border-box; }
+
+    /* 4. İSTATİSTİKLER */
+    .stats-grid { 
+        grid-template-columns: 1fr 1fr; 
+        gap: 20px; 
+    }
+    .stat-num { font-size: 36px; }
+
+    /* 5. NASIL ÇALIŞIYORUZ */
+    .step-2col { grid-template-columns: 1fr; gap: 30px; }
+    .model-view { order: -1; aspect-ratio: 1/1; width: 80%; margin: 0 auto; }
+    .card, .working .card { width: 100% !important; margin-bottom: 15px; }
+
+    /* 6. HİZMETLER */
+    .services { padding: 60px 0; height: auto !important; }
+    .service-list { display: flex; flex-direction: column; }
+    .service-item {
+        padding: 20px 10px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .service-name { font-size: 18px; margin-bottom: 8px; padding: 0; }
+    .service-desc { display: block; text-align: left; font-size: 12px; opacity: 0.8; }
+    .service-arrow { display: none; }
+
+    /* 7. SÜREÇ VE TEKNOLOJİLER */
+    .process-cards { grid-template-columns: 1fr; }
+    .process-card { border-right: none; border-bottom: 1px solid rgba(200,168,107,0.1); padding: 30px 20px; }
+
+    .tech-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        padding: 0 15px;
+    }
+    .tech-card {
+        padding: 25px 15px;
+        min-height: 160px;
+    }
+    .tech-card h3 { font-size: 14px; }
+    .tech-card p { font-size: 10px; -webkit-line-clamp: 4; }
+
+    /* 8. İLETİŞİM */
+    .contact-inner { gap: 50px; }
+    .contact-cta { font-size: 28px; text-align: center; }
+}
+
+/* Küçük telefonlar için ekstra dokunuş */
+@media (max-width: 480px) {
+    .stats-grid { grid-template-columns: 1fr; }
+    .navbar .logo { font-size: 16px; }
+    .section-title { font-size: 32px; }
+}
+/* Keşfet yazısını (kaydırma ipucunu) mobilde gizle */
+    .scroll-hint { 
+        display: none !important; 
+    }
+    </style>
+</head>
+<body>
+ 
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+ 
+    <header class="navbar" id="navbar">
+        <div class="nav-content">
+            <div class="logo">The Compose <span>Labs</span></div>
+            <nav>
+                <ul class="menu">
+                    <li><a href="#nasil-calisiyoruz">Nasıl Çalışırız</a></li>
+                    <li><a href="#teknolojiler">Teknolojiler</a></li>
+                    <li><a href="#hizmetler">Hizmetler</a></li>
+                    <li><a href="#iletisim">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+ 
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-grid"></div>
+        <div class="orb orb1"></div>
+        <div class="orb orb2"></div>
+        <div class="orb orb3"></div>
+        <div class="hero-ring"></div>
+ 
+        <div class="hero-content">
+            <span class="hero-eyebrow">Büyük Ölçekli 3D Mühendislik</span>
+            <h1>Büyük Ölçekli<br><em>3D Mühendislikte</em><br>Güçlü ve Uygulanabilir Çözümler</h1>
+            <p class="hero-sub">
+                Tasarım, prototipleme ve üretim süreçlerinde; mühendislik odağını, üretilebilirliği ve hız ihtiyacını bir araya getiriyoruz.
+            </p>
+            <div class="hero-cta">
+                <a href="#hizmetler" class="btn-primary"><span>Hizmetlerimizi İnceleyin</span></a>
+                <a href="#iletisim" class="btn-outline">Bizimle İletişime Geçin</a>
+            </div>
+        </div>
+ 
+        <div class="scroll-hint">
+            <span>Keşfet</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+ 
+ 
+    <section class="working" id="nasil-calisiyoruz">
+        <div class="container">
+            <div class="working-header">
+                <div>
+                    <span class="section-tag">Süreç</span>
+                    <h2 class="section-title">Nasıl<br>Çalışıyoruz</h2>
+                </div>
+                <p class="section-sub">
+                    Her projeyi benzersiz bir mühendislik zorluğu olarak görüyoruz. Analitik düşünce ile yaratıcı tasarımı bir araya getirerek sonuç odaklı çözümler üretiyoruz.
+                </p>
+            </div>
+ 
+            <div class="step-2col">
+                <div>
+                    <div class="working-steps" style="position:relative;">
+                        <div class="step-line"></div>
+                        <div class="step">
+                            <div class="step-num">01</div>
+                            <div class="step-content">
+                                <h3>Fikir ve Keşif</h3>
+                                <p>Müşteri ihtiyacını, teknik gereksinimleri ve üretim hedeflerini birlikte analiz ederek projenin kapsamını netleştiriyoruz.</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">02</div>
+                            <div class="step-content">
+                                <h3>3D Modelleme ve Simülasyon</h3>
+                                <p>Tasarımı dijital ortamda geliştiriyor, gerekli analiz ve doğrulamalarla üretim öncesi riskleri azaltıyoruz.</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">03</div>
+                            <div class="step-content">
+                                <h3>Hızlı Prototipleme</h3>
+                                <p>Prototip üretimiyle tasarımı fiziksel olarak test ediyor, gerekli iyileştirmeleri kısa sürede devreye alıyoruz.</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">04</div>
+                            <div class="step-content">
+                                <h3>Üretim ve Kalite</h3>
+                                <p>Üretim sürecini planlıyor, kalite kontrol adımlarıyla birlikte sürdürülebilir ve tutarlı sonuçlar hedefliyoruz.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+ 
+                <div class="model-view">
+                    <div class="model-label">3D Model Önizleme</div>
+                    <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:relative;z-index:1;opacity:0.7;">
+                        <polygon points="60,8 110,36 110,84 60,112 10,84 10,36" stroke="#c8a86b" stroke-width="1" fill="none" opacity="0.6"/>
+                        <polygon points="60,8 110,36 60,60" stroke="#c8a86b" stroke-width="0.5" fill="none" opacity="0.3"/>
+                        <polygon points="60,8 10,36 60,60" stroke="#c8a86b" stroke-width="0.5" fill="none" opacity="0.3"/>
+                        <polygon points="10,36 110,36 60,60" stroke="#c8a86b" stroke-width="0.5" fill="none" opacity="0.2"/>
+                        <line x1="60" y1="8" x2="60" y2="112" stroke="#c8a86b" stroke-width="0.5" opacity="0.2" stroke-dasharray="4,4"/>
+                        <line x1="10" y1="36" x2="110" y2="84" stroke="#c8a86b" stroke-width="0.5" opacity="0.15" stroke-dasharray="4,4"/>
+                        <circle cx="60" cy="60" r="3" fill="#c8a86b" opacity="0.8"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+ 
+    <section class="technologies" id="teknolojiler">
+        <div class="container">
+            <div class="tech-header">
+                <span class="section-tag">Altyapı</span>
+                <h2 class="section-title">Kullandığımız<br>Teknolojiler</h2>
+            </div>
+ 
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <div class="tech-icon">⬡</div>
+                    <h3>CAD / CAM Sistemleri</h3>
+                    <p>Ürün geliştirme ve üretime hazırlık süreçlerinde, hassas 3D modelleme ve teknik tasarım araçlarından yararlanıyoruz.</p>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-icon">◈</div>
+                    <h3>Analiz ve Doğrulama</h3>
+                    <p>Tasarım kararlarını desteklemek ve performansı öngörmek için dijital analiz ve doğrulama yöntemleri kullanıyoruz.</p>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-icon">◎</div>
+                    <h3>Endüstriyel 3D Baskı</h3>
+                    <p>İhtiyaca göre farklı üretim teknolojileriyle prototip ve fonksiyonel parça çözümleri geliştiriyoruz.</p>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-icon">⊕</div>
+                    <h3>CNC ve Son İşlem Süreçleri</h3>
+                    <p>Parça kalitesi ve uygulama ihtiyacına göre işleme, düzeltme ve sonlandırma süreçlerini planlıyoruz.</p>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-icon">◇</div>
+                    <h3>3D Tarama ve Tersine Mühendislik</h3>
+                    <p>Mevcut parçaların dijitalleştirilmesi, ölçülmesi ve yeniden modellenmesi için tersine mühendislik süreçleri uyguluyoruz.</p>
+                </div>
+                <div class="tech-card">
+                    <div class="tech-icon">△</div>
+                    <h3>Kalite Kontrol</h3>
+                    <p>Üretim sürecinde ölçüsel doğruluk ve uygulama uygunluğunu kontrol ederek daha güvenilir sonuçlar elde ediyoruz.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+ 
+    <section class="services" id="hizmetler">
+        <div class="container">
+            <div class="services-header">
+                <div>
+                    <span class="section-tag">Çözümler</span>
+                    <h2 class="section-title">Hizmetlerimiz</h2>
+                </div>
+                <p class="section-sub">
+                    Konsept tasarımdan seri üretime kadar her aşamada yanınızdayız.
+                </p>
+            </div>
+ 
+            <div class="service-list">
+                <div class="service-item">
+                    <span class="service-num">01</span>
+                    <span class="service-name">Yedek Parça ve Özel Üretim</span>
+                    <span class="service-desc">Düşük adetli veya özel ihtiyaçlara yönelik parçaları kalıpsız üretim yöntemleri ile hızlı şekilde üretiyoruz. Mevcut parçaların geliştirilmesi ve yeniden üretimi için mühendislik destekli çözümler sunuyoruz.</span>
+                    <div class="service-arrow">→</div>
+                </div>
+                <div class="service-item">
+                    <span class="service-num">02</span>
+                    <span class="service-name">Prototip ve Mock-Up Üretimi</span>
+                    <span class="service-desc">Büyük ölçekli 3D üretim teknolojileri ile tasarım doğrulama, ürün geliştirme ve sunum süreçleri için hızlı ve yüksek hassasiyetli prototip çözümleri sunuyoruz. Fonksiyonel ve görsel mock-up üretimleri ile geliştirme sürecini hızlandırıyoruz.</span>
+                    <div class="service-arrow">→</div>
+                </div>
+                <div class="service-item">
+                    <span class="service-num">03</span>
+                    <span class="service-name">Yüksek Sıcaklık Kompozit Kalıpları</span>
+                    <span class="service-desc">Otoklav, prepreg ve vakum infüzyon süreçlerine uygun, yüksek sıcaklık ve basınca dayanıklı kalıp çözümleri geliştiriyoruz. Endüstriyel üretim gereksinimlerine uygun, uzun ömürlü ve hassas yüzey kalitesi sunan kalıplar üretiyoruz.</span>
+                    <div class="service-arrow">→</div>
+                </div>
+                <div class="service-item">
+                    <span class="service-num">04</span>
+                    <span class="service-name">Mobilya ve Aydınlatma Çözümleri</span>
+                    <span class="service-desc">Büyük ölçekli 3D üretim ile özgün tasarım formlarına sahip, hafif ve dayanıklı mobilya ve aydınlatma ürünleri geliştiriyoruz. İç mimari projelere özel, tasarım odaklı üretim çözümleri sunuyoruz.</span>
+                    <div class="service-arrow">→</div>
+                </div>
+                <div class="service-item">
+                    <span class="service-num">05</span>
+                    <span class="service-name">İç Mimari ve Dekoratif Panel Üretimi</span>
+                    <span class="service-desc">Parametrik tasarım ve serbest form geometrilerle, mimari projelere özel duvar panelleri ve dekoratif yüzeyler üretiyoruz. Büyük ölçekli ve hafif yapılarla mekânlara özgün tasarım çözümleri sağlıyoruz.</span>
+                    <div class="service-arrow">→</div>
+                </div>
+                <div class="service-item">
+                    <span class="service-num">06</span>
+                    <span class="service-name">Üretim Fikstürleri ve Aparatlar</span>
+                    <span class="service-desc">Delme, kesme, montaj ve üretim süreçlerini kolaylaştıran, hassas ölçülere sahip fikstür ve yardımcı ekipmanlar tasarlayıp üretiyoruz. Üretim verimliliğini artıran özel çözümler geliştiriyoruz.</span>
+                    <div class="service-arrow">→</div>
+                </div>
+            </div>
+        </div>
+    </section>
+ 
+    <section class="process">
+        <div class="container">
+            <div class="process-title-row">
+                <div>
+                    <span class="section-tag">Metodoloji</span>
+                    <h2 class="section-title">Proje<br>Akışımız</h2>
+                </div>
+            </div>
+            <div class="process-cards">
+                <div class="process-card">
+                    <span class="process-step-num">01</span>
+                    <h3>Keşif</h3>
+                    <p>İhtiyaçları, teknik sınırları ve proje hedeflerini netleştiriyoruz.</p>
+                </div>
+                <div class="process-card">
+                    <span class="process-step-num">02</span>
+                    <h3>Tasarım</h3>
+                    <p>Modelleme, doğrulama ve geliştirme adımlarıyla çözümü olgunlaştırıyoruz.</p>
+                </div>
+                <div class="process-card">
+                    <span class="process-step-num">03</span>
+                    <h3>Üretim</h3>
+                    <p>Belirlenen kriterlere uygun şekilde üretim ve kontrol süreçlerini yürütüyoruz.</p>
+                </div>
+                <div class="process-card">
+                    <span class="process-step-num">04</span>
+                    <h3>Teslim ve Destek</h3>
+                    <p>Projeyi gerekli teknik çıktı ve yönlendirmelerle birlikte teslim ediyoruz.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+ 
+    <section class="contact" id="iletisim">
+        <div class="container">
+            <div class="contact-inner">
+                <div>
+                    <span class="section-tag">İletişim</span>
+                    <h2 class="contact-cta">Projenizi<br>birlikte<br><em>hayata geçirelim.</em></h2>
+                    <p style="margin-top:32px; font-size:14px; color:var(--muted); line-height:1.8;">
+                        Her projenin ihtiyacı farklıdır. Hedefinizi paylaşırsanız, size uygun teknik yaklaşımı birlikte netleştirebiliriz.
+                    </p>
+                </div>
+ 
+                <div class="contact-form">
+                    <div class="form-field">
+                        <label>Ad Soyad</label>
+                        <input type="text" placeholder="Adınızı girin">
+                    </div>
+                    <div class="form-field">
+                        <label>E-posta</label>
+                        <input type="email" placeholder="email@sirket.com">
+                    </div>
+                    <div class="form-field">
+                        <label>Proje Hakkında</label>
+                        <textarea placeholder="Projenizi kısaca anlatın..."></textarea>
+                    </div>
+                    <a href="#" class="btn-primary" style="text-align:center;"><span>Mesaj Gönder</span></a>
+                </div>
+            </div>
+ 
+            <div class="footer-bottom">
+                <div class="footer-logo">The Compose Labs</div>
+                <div class="footer-copy">© 2026 — Tüm hakları saklıdır</div>
+            </div>
+        </div>
+    </section>
+ 
+    <script>
+        // ——— Custom Cursor & Mobile Check ———
+        // Bu kontrol, dokunmatik cihazlarda (mobilde) imleç hatalarını önler.
+        if (window.matchMedia("(min-width: 901px)").matches) {
+            const cursor = document.getElementById('cursor');
+            const ring   = document.getElementById('cursorRing');
+            let mx=0, my=0, rx=0, ry=0;
+
+            document.addEventListener('mousemove', e => {
+                mx = e.clientX; my = e.clientY;
+                cursor.style.left = mx + 'px';
+                cursor.style.top  = my + 'px';
+            });
+
+            (function animRing(){
+                rx += (mx - rx) * 0.12;
+                ry += (my - ry) * 0.12;
+                ring.style.left = rx + 'px';
+                ring.style.top  = ry + 'px';
+                requestAnimationFrame(animRing);
+            })();
+
+            // Hover efektleri (Sadece masaüstünde çalışır)
+            document.querySelectorAll('a, button, .service-item, .tech-card').forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    ring.style.width  = '52px';
+                    ring.style.height = '52px';
+                    ring.style.opacity = '0.9';
+                });
+                el.addEventListener('mouseleave', () => {
+                    ring.style.width  = '36px';
+                    ring.style.height = '36px';
+                    ring.style.opacity = '0.6';
+                });
+            });
+        } else {
+            // Mobilde imleç elementlerini tamamen kaldır ki ekranı kapatmasınlar
+            const cursorEl = document.getElementById('cursor');
+            const ringEl = document.getElementById('cursorRing');
+            if(cursorEl) cursorEl.remove();
+            if(ringEl) ringEl.remove();
+        }
+
+        // ——— Navbar scroll ———
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+        });
+
+        // ——— Intersection Observer (fade-in) ———
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => entry.target.classList.add('visible'), i * 80);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.stat-item, .step, .tech-card, .service-item, .process-card').forEach(el => observer.observe(el));
+
+        // ——— Counter Animation ———
+        const countObserver = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target.querySelector('.stat-num');
+                    if (!el) return;
+                    const target = +el.dataset.count;
+                    const dur = 1800, step = 16;
+                    let cur = 0;
+                    const interval = setInterval(() => {
+                        cur = Math.min(cur + Math.ceil(target / (dur / step)), target);
+                        el.textContent = cur + (el.parentElement.querySelector('.stat-label').textContent.includes('%') ? '' : '+');
+                        if (cur >= target) {
+                            el.textContent = target + (el.parentElement.querySelector('.stat-label').textContent.includes('%') ? '%' : '+');
+                            clearInterval(interval);
+                        }
+                    }, step);
+                    countObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.4 });
+
+        document.querySelectorAll('.stat-item').forEach(el => countObserver.observe(el));
+    </script>
+</body>
+</html>
