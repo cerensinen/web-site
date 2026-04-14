@@ -1,0 +1,18 @@
+[
+  {
+    "ContainingType": "ProjeninAdi.Controllers.IletisimController",
+    "Method": "FormuAl",
+    "RelativePath": "api/Iletisim",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "gelenForm",
+        "Type": "ProjeninAdi.Models.IletisimFormu",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
