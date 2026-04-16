@@ -1778,7 +1778,6 @@
     
 <script>
     // --- Global Değişkenler ---
-    const apiUrl = "https://localhost:7246/api/Iletisim";
     let index = 0;
 
     // --- Proje Slider Fonksiyonu ---
@@ -1801,7 +1800,7 @@
         else if (index > maxIndex) index = 0;
 
         const slideWidth = slides[0].clientWidth;
-        const gap = 24; // CSS gap varsa
+        const gap = 24; 
 
         slider.style.transform = `translateX(-${index * (slideWidth + gap)}px)`;
     }
@@ -1894,9 +1893,7 @@
 
                     const interval = setInterval(() => {
                         cur = Math.min(cur + Math.ceil(target / (dur / step)), target);
-
                         const isPercent = entry.target.querySelector('.stat-label').textContent.includes('%');
-
                         el.textContent = cur + (isPercent ? '' : '+');
 
                         if (cur >= target) {
@@ -1913,58 +1910,25 @@
         document.querySelectorAll('.stat-item')
             .forEach(el => countObserver.observe(el));
 
-        // 5. API Mesaj Gönderme
+        // 5. Form Doğrulama (Hata Düzeltildi)
         const btnGonder = document.getElementById('btnGonder');
 
         if (btnGonder) {
-            btnGonder.addEventListener('click', async function (e) {
-                e.preventDefault();
+            btnGonder.addEventListener('click', function (e) {
+                // Not: e.preventDefault() KALDIRILDI. 
+                // Formun Web3Forms'a gitmesi için tarayıcının normal işlemine izin veriyoruz.
 
-                const adInput = document.querySelector('input[placeholder="Adınızı girin"]');
-                const mailInput = document.querySelector('input[placeholder="email@sirket.com"]');
-                const mesajInput = document.querySelector('textarea[placeholder="Projenizi kısaca anlatın..."]');
+                const adInput = document.querySelector('input[name="name"]');
+                const mailInput = document.querySelector('input[name="email"]');
+                const mesajInput = document.querySelector('textarea[name="message"]');
 
-                if (!adInput || !mailInput || !mesajInput) {
-                    alert("Form elemanları bulunamadı.");
-                    return;
-                }
-
-                const girilenAd = adInput.value;
-                const girilenMail = mailInput.value;
-                const girilenMesaj = mesajInput.value;
-
-                if (!girilenAd || !girilenMail || !girilenMesaj) {
+                if (!adInput.value || !mailInput.value || !mesajInput.value) {
+                    e.preventDefault(); // Sadece alanlar boşsa gönderimi durdur
                     alert("Lütfen tüm alanları doldurun.");
-                    return;
-                }
-
-                const formData = {
-                    AdSoyad: girilenAd,
-                    Email: girilenMail,
-                    Mesaj: girilenMesaj
-                };
-
-                try {
-                    const response = await fetch(apiUrl, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(formData)
-                    });
-
-                    if (response.ok) {
-                        alert("Harika! Mesajınız C# tarafına ulaştı.");
-                        adInput.value = '';
-                        mailInput.value = '';
-                        mesajInput.value = '';
-                    } else {
-                        alert("C# paketi aldı ama bir şeyler ters gitti. Hata Kodu: " + response.status);
-                    }
-
-                } catch (error) {
-                    console.error("Hata:", error);
-                    alert("Sunucuya bağlanılamadı. Visual Studio'da projenin açık olduğundan emin olun.");
+                } else {
+                    // Form doluysa butonu "Gönderiliyor..." yap ve gitmesine izin ver
+                    const btnSpan = btnGonder.querySelector('span');
+                    if(btnSpan) btnSpan.textContent = "Gönderiliyor...";
                 }
             });
         }
