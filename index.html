@@ -972,6 +972,7 @@
         .scroll-hint {
             display: none;
         }
+
     }
 
     /* Mobilde açık */
@@ -1094,6 +1095,27 @@
         height: 350px; /* Mobilde çok uzun durmaması için yüksekliği biraz kıstım, isteğe bağlı değiştirebilirsin */
         border-radius: 50px;
     }
+
+    /* 8. İLETİŞİM */
+        .contact { 
+            margin-top: -100px; /* Çok yukarı yapışmasın diye düzelttim */
+        }
+        .contact-inner { 
+            grid-template-columns: 1fr; /* İŞTE SİHİRLİ KOD: Yan yana değil, alt alta diz! */
+            gap: 50px; 
+        }
+        .contact-cta { 
+            font-size: 32px; 
+            text-align: center; 
+        }
+        
+        /* Mobilde sol sütundaki yazıların ve ikonların ortalı, şık durması için */
+        .contact-inner > div:first-child {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
 }
 
 .image-showcase{
@@ -1186,6 +1208,86 @@
        .section-sub {
         font-size: 12.5px;
 }
+
+/* ==============================
+       KURUMSAL FOOTER (YENİ)
+       ============================== */
+    .custom-footer {
+        margin-top: 100px;
+        padding-top: 60px;
+        border-top: 1px solid rgba(200,168,107,0.15); /* Temaya uygun şık altın çizgi */
+        display: grid;
+        grid-template-columns: 1.5fr 1fr 1fr; /* Alanı 3 parçaya böler */
+        gap: 40px;
+    }
+    .footer-brand p {
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.8;
+        max-width: 280px;
+        margin-top: 16px;
+    }
+    .footer-info-box h4 {
+        font-family: 'Space Mono', monospace;
+        color: var(--accent);
+        font-size: 11px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 24px;
+    }
+    .footer-info-box p {
+        color: var(--muted);
+        font-size: 14px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .footer-socials {
+        display: flex;
+        gap: 20px;
+    }
+    .footer-socials a {
+        color: var(--muted);
+        transition: all 0.3s ease;
+    }
+    .footer-socials a:hover {
+        color: var(--accent);
+        transform: translateY(-4px);
+    }
+    
+    /* En alt telif hakkı yazısı */
+    .footer-bottom {
+        margin-top: 60px;
+        padding: 24px 0;
+        border-top: 1px solid rgba(255,255,255,0.05);
+        text-align: center; /* Logoyu ve yazıyı tam ortalar */
+    }
+    .footer-copy {
+        font-family: 'Space Mono', monospace;
+        font-size: 11px;
+        letter-spacing: 2px;
+        color: rgba(200,168,107,0.4);
+    }
+
+    /* MOBİL EKRANLAR İÇİN DÜZEN (Alt alta dizer) */
+    @media (max-width: 900px) {
+        .custom-footer {
+            grid-template-columns: 1fr;
+            text-align: center;
+            gap: 50px;
+            margin-top: 60px;
+        }
+        .footer-brand p {
+            margin: 16px auto 0 auto;
+        }
+        .footer-info-box p {
+            justify-content: center;
+        }
+        .footer-socials {
+            justify-content: center;
+        }
+    }
         </style>
 
     </head>
@@ -1489,19 +1591,149 @@
             </div>
         </section>
     
-       <section class="contact" id="iletisim">
+   
+
+<section class="contact" id="iletisim">
+    
+    <style>
+        .kesin-cozum-grid {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 80px !important;
+            align-items: start !important;
+        }
+        
+        .iletisim-satir {
+            display: flex; 
+            align-items: center; 
+            gap: 16px; 
+            font-size: 15px; 
+            color: var(--muted);
+            margin-top: 10px;
+        }
+        
+        .iletisim-ikon {
+            color: var(--accent); 
+            display: flex;
+            align-items: center;
+        }
+
+        /* YUKARI ÇIK BUTONU TASARIMI */
+        .scroll-top-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border: 1px solid rgba(200,168,107,0.3);
+            border-radius: 50%;
+            color: var(--accent);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            background: transparent;
+        }
+        .scroll-top-btn:hover {
+            background: var(--accent);
+            color: var(--navy);
+            transform: translateY(-5px); /* Üzerine gelince hafifçe havaya kalkar */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        /* MOBİL EKRANLAR İÇİN KUSURSUZ HİZALAMA */
+        @media (max-width: 900px) {
+            .kesin-cozum-grid {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 60px !important;
+                text-align: center !important;
+            }
+            
+            .kesin-cozum-sol { display: contents !important; }
+            .baslik-kismi { order: 1 !important; }
+            .contact-form { order: 2 !important; width: 100% !important; }
+            
+            .bilgiler-kismi { 
+                order: 3 !important; 
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 24px !important;
+                width: 100%;
+            }
+            
+            .iletisim-kutu {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+
+            .sosyal-kisim {
+                justify-content: center !important;
+                margin-top: 10px;
+            }
+
+            .footer-bottom {
+                flex-direction: column !important;
+                gap: 15px !important;
+                text-align: center !important;
+                padding-bottom: 30px !important;
+            }
+        }
+    </style>
+
     <div class="container">
-        <div class="contact-inner">
-            <div>
-                <span class="section-tag">İletişim</span>
-                <h2 class="contact-cta">Projenizi<br>birlikte<br><em>hayata geçirelim.</em></h2>
-                <p style="margin-top:32px; font-size:14px; color:var(--muted); line-height:1.8;">
-                    Her projenin ihtiyacı farklıdır. Hedefinizi paylaşırsanız, size uygun teknik yaklaşımı birlikte netleştirebiliriz.
-                </p>
+        
+        <div class="contact-inner kesin-cozum-grid">
+            
+            <div class="kesin-cozum-sol">
+                
+                <div class="baslik-kismi">
+                    <span class="section-tag">İletişim</span>
+                    <h2 class="contact-cta">Projenizi<br>birlikte<br><em>hayata geçirelim.</em></h2>
+                    <p style="margin-top:32px; font-size:14px; color:var(--muted); line-height:1.8; margin-bottom: 40px;">
+                        Her projenin ihtiyacı farklıdır. Hedefinizi paylaşırsanız, size uygun teknik yaklaşımı birlikte netleştirebiliriz.
+                    </p>
+                </div>
+                
+                <div class="bilgiler-kismi">
+                    <div class="iletisim-kutu">
+                        <div class="iletisim-satir">
+                            <span class="iletisim-ikon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            </span> 
+                            İstanbul / Türkiye
+                        </div>
+                        
+                        <div class="iletisim-satir">
+                            <span class="iletisim-ikon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            </span> 
+                            thecomposelabsinfo@gmail.com
+                        </div>
+                        
+                        <div class="iletisim-satir">
+                            <span class="iletisim-ikon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                            </span> 
+                            +90 555 555 55 55
+                        </div>
+                    </div>
+                    
+                    <div class="iletisim-satir sosyal-kisim" style="gap: 20px;">
+                        <a href="https://www.instagram.com/thecomposelabs/" target="_blank" rel="noopener noreferrer" style="color: var(--muted); display: flex; align-items: center; transition: color 0.3s ease;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                        </a>
+                        <a href="https://www.linkedin.com/in/the-compose-labs-410844229?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank" rel="noopener noreferrer" style="color: var(--muted); display: flex; align-items: center; transition: color 0.3s ease;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                        </a>
+                    </div>
+                </div>
+                
             </div>
             
             <form action="https://api.web3forms.com/submit" method="POST" class="contact-form">
-                
                 <input type="hidden" name="access_key" value="4ba815bc-6507-4aca-a198-9e9528fd34c7">
 
                 <div class="form-field">
@@ -1521,17 +1753,26 @@
                 
                 <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
 
-                <button type="submit" id="btnGonder" class="btn-primary" style="text-align:center; width: 100%; border: none;">
+                <button type="submit" id="btnGonder" class="btn-primary" style="text-align:center; width: 100%; border: none; cursor: pointer;">
                     <span>Mesaj Gönder</span>
                 </button>
-                
             </form>
-            </div>
+
+        </div>
+
+        <div style="text-align: center; margin-top: 80px; margin-bottom: 20px;">
+            <a href="#" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;" class="scroll-top-btn" aria-label="Yukarı Çık">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="18 15 12 9 6 15"></polyline>
+                </svg>
+            </a>
+        </div>
 
         <div class="footer-bottom">
             <div class="logo">The Compose <span>Labs</span></div>
             <div class="footer-copy">© 2026 — Tüm hakları saklıdır</div>
         </div>
+
     </div>
 </section>
     
@@ -1729,6 +1970,7 @@
         }
     });
 </script>
+
 
 
 </body>
