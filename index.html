@@ -1489,42 +1489,51 @@
             </div>
         </section>
     
-        <section class="contact" id="iletisim">
-            <div class="container">
-                <div class="contact-inner">
-                    <div>
-                        <span class="section-tag">İletişim</span>
-                        <h2 class="contact-cta">Projenizi<br>birlikte<br><em>hayata geçirelim.</em></h2>
-                        <p style="margin-top:32px; font-size:14px; color:var(--muted); line-height:1.8;">
-                            Her projenin ihtiyacı farklıdır. Hedefinizi paylaşırsanız, size uygun teknik yaklaşımı birlikte netleştirebiliriz.
-                        </p>
-                    </div>
-    
-                    <div class="contact-form">
-                        <div class="form-field">
-                            <label>Ad Soyad</label>
-                            <input type="text" placeholder="Adınızı girin">
-                        </div>
-                        <div class="form-field">
-                            <label>E-posta</label>
-                            <input type="email" placeholder="email@sirket.com">
-                        </div>
-                        <div class="form-field">
-                            <label>Proje Hakkında</label>
-                            <textarea placeholder="Projenizi kısaca anlatın..."></textarea>
-                        </div>
-                        <button type="button" id="btnGonder" class="btn-primary" style="text-align:center; width: 100%; border: none;">
-                        <span>Mesaj Gönder</span>
-                        </button>
-                    </div>
-                </div>
-    
-                <div class="footer-bottom">
-                    <div class="logo">The Compose <span>Labs</span></div>
-                    <div class="footer-copy">© 2026 — Tüm hakları saklıdır</div>
-                </div>
+       <section class="contact" id="iletisim">
+    <div class="container">
+        <div class="contact-inner">
+            <div>
+                <span class="section-tag">İletişim</span>
+                <h2 class="contact-cta">Projenizi<br>birlikte<br><em>hayata geçirelim.</em></h2>
+                <p style="margin-top:32px; font-size:14px; color:var(--muted); line-height:1.8;">
+                    Her projenin ihtiyacı farklıdır. Hedefinizi paylaşırsanız, size uygun teknik yaklaşımı birlikte netleştirebiliriz.
+                </p>
             </div>
-        </section>
+            
+            <form action="https://api.web3forms.com/submit" method="POST" class="contact-form">
+                
+                <input type="hidden" name="access_key" value="4ba815bc-6507-4aca-a198-9e9528fd34c7">
+
+                <div class="form-field">
+                    <label>Ad Soyad</label>
+                    <input type="text" name="name" placeholder="Adınızı girin" required>
+                </div>
+                
+                <div class="form-field">
+                    <label>E-posta</label>
+                    <input type="email" name="email" placeholder="email@sirket.com" required>
+                </div>
+                
+                <div class="form-field">
+                    <label>Proje Hakkında</label>
+                    <textarea name="message" placeholder="Projenizi kısaca anlatın..." required></textarea>
+                </div>
+                
+                <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+
+                <button type="submit" id="btnGonder" class="btn-primary" style="text-align:center; width: 100%; border: none;">
+                    <span>Mesaj Gönder</span>
+                </button>
+                
+            </form>
+            </div>
+
+        <div class="footer-bottom">
+            <div class="logo">The Compose <span>Labs</span></div>
+            <div class="footer-copy">© 2026 — Tüm hakları saklıdır</div>
+        </div>
+    </div>
+</section>
     
 <script>
     // --- Global Değişkenler ---
@@ -1720,5 +1729,7 @@
         }
     });
 </script>
+
+
 </body>
 </html>
