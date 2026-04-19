@@ -810,6 +810,7 @@
         font-size: 12px;
         letter-spacing: 2px;
         margin-bottom: 8px;
+        margin-left: 15px;
         color: #c5a46d; /* senin altın tonuna uygun */
     }
 
@@ -1086,7 +1087,8 @@
 
     /* Mobilde 2 fotoğraf yerine TEK fotoğraf göster (%100) */
     .slide {
-        flex: 0 0 100%; 
+        flex: 0 0 100%;
+        padding: 0; 
     }
 
     /* Fotoğraf mobilde kendi alanını tam kaplasın */
@@ -1094,6 +1096,8 @@
         width: 100%; 
         height: 350px; /* Mobilde çok uzun durmaması için yüksekliği biraz kıstım, isteğe bağlı değiştirebilirsin */
         border-radius: 50px;
+        margin: 0 auto;
+        display: block;
     }
 
     /* 8. İLETİŞİM */
@@ -1717,8 +1721,8 @@
                             <span class="iletisim-ikon">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                             </span> 
-                            +90 555 555 55 55
-                        </div>
+                            +90 536 403 11 07  /  +90 538 820 06 12
+3                        </div>
                     </div>
                     
                     <div class="iletisim-satir sosyal-kisim" style="gap: 20px;">
@@ -1775,36 +1779,47 @@
 
     </div>
 </section>
+
+<script> 
     
-<script>
-    // --- Global Değişkenler ---
+// --- Global Değişkenler ---
     let index = 0;
 
-    // --- Proje Slider Fonksiyonu ---
+    // --- Proje Slider Fonksiyonu (ASLA YAMULMAYAN KESİN ÇÖZÜM) ---
     function move(dir) {
         const slider = document.getElementById("slider");
         if (!slider) return;
 
         const slides = slider.children;
-        const totalSlides = slides.length;
+        if (slides.length === 0) return;
 
+        // Mobilde 1, masaüstünde 2 fotoğraf gösterildiğini belirliyoruz
         const isMobile = window.innerWidth <= 900;
         const visible = isMobile ? 1 : 2;
         const step = isMobile ? 1 : 2;
 
+        // Yön tuşuna basıldığında index'i artır
         index += dir * step;
 
-        const maxIndex = Math.max(0, totalSlides - visible);
+        // Kaymanın sınırını belirliyoruz (boşluğa gitmesin diye)
+        const maxIndex = Math.max(0, slides.length - visible);
 
-        if (index < 0) index = maxIndex;
-        else if (index > maxIndex) index = 0;
+        // Sona gelince başa, baştayken sona dönmesi için
+        if (index < 0) {
+            index = maxIndex;
+        } else if (index > maxIndex) {
+            index = 0;
+        }
 
-        const slideWidth = slides[0].clientWidth;
-        const gap = 24; 
+        // İŞTE YAMULMAYI ÇÖZEN SİHİRLİ SATIR:
+        // Fotoğrafın o anki "gerçek" genişliğini (boşluklar dahil) alıyoruz.
+        const slideWidth = slides[0].offsetWidth;
 
-        slider.style.transform = `translateX(-${index * (slideWidth + gap)}px)`;
+        // Tam olarak o genişlik kadar itiyoruz. Ne 1 px fazla, ne 1 px eksik.
+        slider.style.transform = `translateX(-${index * slideWidth}px)`;
     }
 
+    // Telefon yan çevrilirse veya ekran büyütülürse kaymayı sıfırla ki bozulmasın
     window.addEventListener("resize", () => {
         const slider = document.getElementById("slider");
         if (!slider) return;
