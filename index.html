@@ -4,9 +4,19 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>The Compose Labs</title>
+        <link rel="icon" type="image/png" href="icon.png">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
         <style>
+
+            .logo-img {
+                width: 32px;
+                height: 32px;
+                margin-right: 8px;
+                margin-top: -8px;
+                vertical-align: middle;
+            }
+            
             /* ==============================
             RESET & BASE
             ============================== */
@@ -1292,6 +1302,7 @@
             justify-content: center;
         }
     }
+    
         </style>
 
     </head>
@@ -1302,9 +1313,12 @@
     
         <header class="navbar" id="navbar">
             <div class="nav-content">
-                <div style="color: var(--mid);">
-                        <div class="logo">The Compose <span>Labs</span></div>
+              <div style="color: var(--mid);">
+                <div class="logo">
+             <img src="icon.png" alt="logo" class="logo-img">
+             The Compose <span>Labs</span>
                 </div>
+            </div>
             
                 <nav>
                     <ul class="menu">
